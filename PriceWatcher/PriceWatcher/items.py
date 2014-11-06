@@ -10,7 +10,9 @@ import scrapy
 
 class PriceWatcherItem(scrapy.Item):
     # define the fields for your item here like:
-    name = scrapy.Field()
-    price = scrapy.Field()
-    originalPrice = scrapy.Field()
-    designer = scrapy.Field()
+    id=scrapy.Field()
+    name=scrapy.Field()
+    price=scrapy.Field()
+    originalPrice=scrapy.Field()
+    designer=scrapy.Field()
+    link=scrapy.Field()
