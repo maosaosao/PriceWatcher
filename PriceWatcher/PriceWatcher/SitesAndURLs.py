@@ -8,10 +8,10 @@ URL_SALE_BAG_BARNEYS = ["http://www.barneys.com/on/demandware.store/Sites-BNY-Si
 
 SMTP_HOST = "0.0.0.0"
 LOG_IN = 'YOURUSERNAME'
-PASS_WORD = 'GMAILPASSWORD'
+PASS_WORD = 'YOURPASSWORD'
 FROM_EMAIL = "YOURUSERNAME@gmail.com"
-TO_EMAILS = ["YOURUSERNAME@gmail.com"]
-# sec
+TO_EMAILS = ["YOURPASSWORD@gmail.com"]
+# DURATION
 DURATION = 60*3
 IDS_SEEN = set()
 

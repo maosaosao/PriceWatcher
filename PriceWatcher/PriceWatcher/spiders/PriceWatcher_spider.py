@@ -1,6 +1,6 @@
 import scrapy
 import smtplib
-from scrapy.exceptions import CloseSpider
+import json
 from PriceWatcher.items import PriceWatcherItem
 from PriceWatcher.SitesAndURLs import *
 from email.mime.text import MIMEText
@@ -21,10 +21,19 @@ class PriceWatcherSpider(scrapy.spider.Spider):
             item['price'] = div.xpath('.//div[@class="price"]//div[@class="salesprice"]/em/text()').extract()
             item['originalPrice'] = div.xpath('.//div[@class="price"]//div[@class="standardprice"]/text()').extract()
             item['link'] = div.xpath('.//p[@class="productimage"]/a/@href').extract()
+            with open('items.json', 'r') as data_file:
+                s = data_file.read()
+                existIds = json.loads(s)
+                for eid in existIds:
+                    IDS_SEEN.add(eid)
             if str(item['id']) in IDS_SEEN:
                 continue
             else:
+                print('Newly added Item!')
                 IDS_SEEN.add(str(item['id']))
+                with open('items.json', 'w') as data_file:
+                    s = json.dumps(list(IDS_SEEN))
+                    data_file.write(s)
                 self.send_email_notification(item)
             yield item
 
@@ -45,8 +54,3 @@ class PriceWatcherSpider(scrapy.spider.Spider):
             s.sendmail(FROM_EMAIL, TO_EMAILS, msg.as_string())
         finally:
             s.quit()
-
-    def stop(self):
-        raise CloseSpider("Stopping spider")
-
-    #if __name__ == '__main__':
