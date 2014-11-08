@@ -26,11 +26,12 @@ class PriceWatcherSpider(scrapy.spider.Spider):
                 existIds = json.loads(s)
                 for eid in existIds:
                     IDS_SEEN.add(eid)
-            if str(item['id']) in IDS_SEEN:
+            itemID = str(item['id'])[-16:-2]
+            if itemID in IDS_SEEN:
                 continue
             else:
                 print('Newly added Item!')
-                IDS_SEEN.add(str(item['id']))
+                IDS_SEEN.add(itemID)
                 with open('items.json', 'w') as data_file:
                     s = json.dumps(list(IDS_SEEN))
                     data_file.write(s)
@@ -38,12 +39,19 @@ class PriceWatcherSpider(scrapy.spider.Spider):
             yield item
 
     def send_email_notification(self, newly_added_bagItem):
-        text = str(newly_added_bagItem['name'][0])+ \
-               " is on Sale. Click the following link :" + "\n" + "\n" + \
-               str(newly_added_bagItem['link'][0]).encode("ascii")
+        bagName = str(newly_added_bagItem['name'][0])
+        bagDesigner = str(newly_added_bagItem['designer'][0])
+        #bagPrice = str(newly_added_bagItem['price'][0])
+        bagLink = str(newly_added_bagItem['link'][0]).encode("ascii")
+
+        text = bagDesigner + " " + bagName+ \
+               " is on Sale "  + "\n" + "\n" + \
+               " Click the following link :" + "\n" + "\n" + \
+               bagLink
+
 
         msg = MIMEText(text)
-        msg['Subject'] = "Barneys added new items in its Bag Sale"
+        msg['Subject'] = "Barneys added " + bagName + " in its Bag Sale "
         msg['From'] = FROM_EMAIL
         msg['To'] = ','.join(TO_EMAILS)
 
